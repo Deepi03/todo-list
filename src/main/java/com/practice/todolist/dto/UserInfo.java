@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "user", uniqueConstraints = {
+
+@Table(name = "UserInfo", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "password")
 })
-public class User {
+public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,6 +28,13 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+    @Column(name = "createdTimeStamp")
     private String createdTimeStamp;
+    @Column(name = "updatedTimeStamp")
     private String updatedTimeStamp;
+
+    public UserInfo(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
