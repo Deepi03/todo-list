@@ -1,10 +1,12 @@
 package com.practice.todolist.security.services;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.practice.todolist.dto.UserInfo;
@@ -22,6 +24,7 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     private String createdTimeStamp;
     private String updatedTimeStamp;
+    private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(Optional<UserInfo> user) {
         return new UserDetailsImpl(user.get());
@@ -34,6 +37,7 @@ public class UserDetailsImpl implements UserDetails {
         this.password = user.getPassword();
         this.createdTimeStamp = user.getCreatedTimeStamp();
         this.updatedTimeStamp = user.getUpdatedTimeStamp();
+        /* this.authorities = Arrays.asList(new SimpleGrantedAuthority("ADMIN")); */
     }
 
     public Long getId() {
@@ -91,8 +95,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        return null;
+        return authorities;
     }
 
     @Override

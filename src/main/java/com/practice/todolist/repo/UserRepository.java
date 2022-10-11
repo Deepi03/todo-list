@@ -11,5 +11,7 @@ import com.practice.todolist.dto.UserInfo;
 public interface UserRepository extends JpaRepository<UserInfo, Long> {
     Optional<UserInfo> findUserByEmail(String email);
 
+    UserInfo findByEmail(String email);
+
     Boolean existsByEmail(String email);
 }

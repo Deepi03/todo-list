@@ -1,11 +1,14 @@
 package com.practice.todolist.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,9 +35,11 @@ public class UserInfo {
     private String createdTimeStamp;
     @Column(name = "updatedTimeStamp")
     private String updatedTimeStamp;
+    private String role = "ADMIN";
 
     public UserInfo(String email, String password) {
         this.email = email;
         this.password = password;
+
     }
 }

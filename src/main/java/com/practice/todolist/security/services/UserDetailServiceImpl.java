@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.practice.todolist.dto.UserInfo;
@@ -26,4 +25,5 @@ public class UserDetailServiceImpl implements UserDetailsService {
         user.orElseThrow(() -> new UsernameNotFoundException("UserInfo not found!"));
         return UserDetailsImpl.build(user);
     }
+
 }
