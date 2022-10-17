@@ -56,8 +56,13 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/v1/**").permitAll()
-                .antMatchers("/api/v1/changePassword").hasRole("ADMIN")
+                .authorizeRequests()
+                .antMatchers("/api/v1/signin")
+                .permitAll()
+                .antMatchers("/api/v1/signup")
+                .permitAll()
+                .antMatchers("/api/v1/changePassword").hasAuthority("ADMIN")
+                .antMatchers("/api/v1/todos").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

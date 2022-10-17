@@ -1,43 +1,46 @@
 package com.practice.todolist.security.services;
 
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Objects;
-import java.util.Optional;
+
+import javax.persistence.Entity;
+import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.practice.todolist.dto.UserInfo;
-
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Data
+@Table(name = "UserInfo", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "password")
+})
 public class UserDetailsImpl implements UserDetails {
 
-    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String password;
     private String createdTimeStamp;
     private String updatedTimeStamp;
-    private Collection<? extends GrantedAuthority> authorities;
 
-    public static UserDetailsImpl build(Optional<UserInfo> user) {
-        return new UserDetailsImpl(user.get());
-
-    }
-
-    public UserDetailsImpl(UserInfo user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.createdTimeStamp = user.getCreatedTimeStamp();
-        this.updatedTimeStamp = user.getUpdatedTimeStamp();
-        /* this.authorities = Arrays.asList(new SimpleGrantedAuthority("ADMIN")); */
+    public UserDetailsImpl(String email, String password) {
+        super();
+        this.email = email;
+        this.password = password;
+        SimpleDateFormat formatter = new SimpleDateFormat();
+        this.createdTimeStamp = formatter.format(new Date());
+        this.updatedTimeStamp = formatter.format(new Date());
     }
 
     public Long getId() {
@@ -52,8 +55,12 @@ public class UserDetailsImpl implements UserDetails {
         return createdTimeStamp;
     }
 
-    public String getUpdatedTimeStamp() {
-        return updatedTimeStamp;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUpdatedTimeStamp(String updatedTime) {
+        this.updatedTimeStamp = updatedTime;
     }
 
     @Override
@@ -95,13 +102,13 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Collections.singleton(new SimpleGrantedAuthority("ADMIN"));
     }
 
     @Override
     public String getUsername() {
         // TODO Auto-generated method stub
-        return null;
+        return email;
     }
 
     @Override
