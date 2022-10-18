@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.practice.todolist.repo.UserRepository;
 
 @Service
-public class ResetPasswordService {
+public class ChangePasswordService {
 
     @Autowired
     UserRepository userRepository;
@@ -29,7 +29,7 @@ public class ResetPasswordService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public void resetPassword(String email, String oldPassword, String newPassword) {
+    public void changePassword(String email, String oldPassword, String newPassword) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, oldPassword));
 

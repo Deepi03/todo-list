@@ -11,6 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +28,7 @@ import com.practice.todolist.payload.response.JwtResponse;
 import com.practice.todolist.payload.response.MessageResponse;
 import com.practice.todolist.repo.UserRepository;
 import com.practice.todolist.security.jwt.JwtUtils;
-import com.practice.todolist.security.services.ResetPasswordService;
+import com.practice.todolist.security.services.ChangePasswordService;
 import com.practice.todolist.security.services.TodoListService;
 import com.practice.todolist.security.services.UserDetailsImpl;
 
@@ -47,11 +50,13 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     @Autowired
-    ResetPasswordService resetPasswordService;
+    ChangePasswordService changePasswordService;
 
     @Autowired
     TodoListService todoListService;
 
+    /* User Endpoint */
+    /* Singin Endpoint */
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -67,6 +72,7 @@ public class AuthController {
                 .ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getEmail(), userDetails.getPassword()));
     }
 
+    /* SingnUp Endpoint */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -79,20 +85,42 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("UserInfo registered successfully"));
     }
 
+    /* Change password Endpoint */
     @PutMapping("/changePassword")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePassword changePassword) {
-        resetPasswordService.resetPassword(changePassword.getEmail(), changePassword.getOldPasssword(),
+        changePasswordService.changePassword(changePassword.getEmail(), changePassword.getOldPasssword(),
                 webSecurityConfig.passwordEncoder().encode(changePassword.getNewPassword()));
 
         return ResponseEntity.ok(new MessageResponse("Password changed successfully"));
     }
 
-    /* Todo endpoint */
+    /* Todo Endpoint */
+    /* Read Todo Endpoint */
+    @GetMapping("/todos")
+    public ResponseEntity<?> displayTodoList() {
+        return ResponseEntity.ok(todoListService.getTodoList());
+    }
+
+    /* Create Todo Endpoint */
     @PostMapping("/todos")
     public ResponseEntity<?> addTodo(@Valid @RequestBody TodoRequest todo) {
         todoListService.createTodo(todo.getName(), todo.getDescription(), todo.getStatus());
-
         return ResponseEntity.ok(new MessageResponse("List Created successfully"));
     }
 
+    /* Update Todo Endpoint */
+    @PutMapping("/todos/{id}")
+    public ResponseEntity<?> updateTodo(@Valid @RequestBody TodoRequest updateTodoRequest,
+            @PathVariable Long id) {
+        todoListService.updateTodo(id, updateTodoRequest.getName(),
+                updateTodoRequest.getDescription(), updateTodoRequest.getStatus());
+        return ResponseEntity.ok(new MessageResponse("Todo updated successfully!"));
+    }
+
+    /* Delete Todo Endpoint */
+    @DeleteMapping("/todos/{id}")
+    public ResponseEntity<?> deleteTodo(@Valid @PathVariable Long id) {
+        todoListService.deleteTodo(id);
+        return ResponseEntity.ok(new MessageResponse("Todo deleted successfully!"));
+    }
 }

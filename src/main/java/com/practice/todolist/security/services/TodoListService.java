@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.practice.todolist.dto.EStatus;
 import com.practice.todolist.dto.Todo;
 import com.practice.todolist.repo.TodoListRepository;
 import com.practice.todolist.repo.UserRepository;
@@ -31,8 +32,6 @@ public class TodoListService {
     public void createTodo(String name, String description, String status) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedInName = authentication.getName();
-        System.out.println();
-        System.out.println("loggedInName :::::" + loggedInName);
         UserDetailsImpl ob = userRepository.findByEmail(loggedInName);
 
         Todo todo = new Todo(name, description, status);
@@ -42,15 +41,21 @@ public class TodoListService {
     }
 
     public void updateTodo(Long id, String name, String description, String status) {
-        Todo existingTodo = todoListRepository.getReferenceById(null);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInName = authentication.getName();
+        UserDetailsImpl ob = userRepository.findByEmail(loggedInName);
+        Todo existingTodo = todoListRepository.getReferenceById(id);
         existingTodo.setName(name);
         existingTodo.setDescription(description);
+        existingTodo.setStatus(EStatus.valueOf(status));
         existingTodo.setUpdatedTimeStamp(formatter.format(new Date()));
+        existingTodo.setUser(ob);
+
         todoListRepository.save(existingTodo);
     }
 
-    public void deleteTodo(String id) {
-        todoListRepository.deleteById(Long.parseLong(id));
+    public void deleteTodo(Long id) {
+        todoListRepository.deleteById(id);
     }
 
 }
