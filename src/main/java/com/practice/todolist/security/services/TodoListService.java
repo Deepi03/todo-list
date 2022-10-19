@@ -25,9 +25,20 @@ public class TodoListService {
 
     SimpleDateFormat formatter = new SimpleDateFormat();
 
+    /**
+     * 
+     * @return All Todo List
+     */
     public List<Todo> getTodoList() {
         return todoListRepository.findAll();
     }
+
+    /**
+     * 
+     * @param name
+     * @param description
+     * @param status
+     */
 
     public void createTodo(String name, String description, String status) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -39,6 +50,14 @@ public class TodoListService {
         todo.setUser(ob);
         todoListRepository.save(todo);
     }
+
+    /**
+     * 
+     * @param id
+     * @param name
+     * @param description
+     * @param status
+     */
 
     public void updateTodo(Long id, String name, String description, String status) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -53,6 +72,11 @@ public class TodoListService {
 
         todoListRepository.save(existingTodo);
     }
+
+    /**
+     * 
+     * @param id
+     */
 
     public void deleteTodo(Long id) {
         todoListRepository.deleteById(id);

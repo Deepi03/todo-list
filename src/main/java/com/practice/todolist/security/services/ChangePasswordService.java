@@ -29,6 +29,12 @@ public class ChangePasswordService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    /**
+     * 
+     * @param email
+     * @param oldPassword
+     * @param newPassword
+     */
     public void changePassword(String email, String oldPassword, String newPassword) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, oldPassword));

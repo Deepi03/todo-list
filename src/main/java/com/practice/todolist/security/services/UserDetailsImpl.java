@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "password")
 })
+
 public class UserDetailsImpl implements UserDetails {
 
     @Id

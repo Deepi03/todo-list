@@ -55,8 +55,11 @@ public class AuthController {
     @Autowired
     TodoListService todoListService;
 
-    /* User Endpoint */
-    /* Singin Endpoint */
+    /**
+     * 
+     * @param loginRequest
+     * @return response with java web token
+     */
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -72,7 +75,11 @@ public class AuthController {
                 .ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getEmail(), userDetails.getPassword()));
     }
 
-    /* SingnUp Endpoint */
+    /**
+     * 
+     * @param signUpRequest
+     * @return Success Message
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -85,7 +92,11 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("UserInfo registered successfully"));
     }
 
-    /* Change password Endpoint */
+    /**
+     * 
+     * @param changePassword
+     * @return Success Message
+     */
     @PutMapping("/changePassword")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePassword changePassword) {
         changePasswordService.changePassword(changePassword.getEmail(), changePassword.getOldPasssword(),
@@ -94,33 +105,51 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("Password changed successfully"));
     }
 
-    /* Todo Endpoint */
-    /* Read Todo Endpoint */
+    /**
+     * 
+     * @return All Todo List
+     */
+
     @GetMapping("/todos")
     public ResponseEntity<?> displayTodoList() {
         return ResponseEntity.ok(todoListService.getTodoList());
     }
 
-    /* Create Todo Endpoint */
+    /**
+     * 
+     * @param todo
+     * @return Success Message
+     */
     @PostMapping("/todos")
     public ResponseEntity<?> addTodo(@Valid @RequestBody TodoRequest todo) {
         todoListService.createTodo(todo.getName(), todo.getDescription(), todo.getStatus());
-        return ResponseEntity.ok(new MessageResponse("List Created successfully"));
+        return ResponseEntity.ok(new MessageResponse("Todo item Created successfully"));
     }
 
-    /* Update Todo Endpoint */
+    /**
+     * 
+     * @param updateTodoRequest
+     * @param id
+     * @return Success Message
+     */
+
     @PutMapping("/todos/{id}")
     public ResponseEntity<?> updateTodo(@Valid @RequestBody TodoRequest updateTodoRequest,
             @PathVariable Long id) {
         todoListService.updateTodo(id, updateTodoRequest.getName(),
                 updateTodoRequest.getDescription(), updateTodoRequest.getStatus());
-        return ResponseEntity.ok(new MessageResponse("Todo updated successfully!"));
+        return ResponseEntity.ok(new MessageResponse("Todo item updated successfully!"));
     }
 
-    /* Delete Todo Endpoint */
+    /**
+     * 
+     * @param id
+     * @return Success Message
+     */
+
     @DeleteMapping("/todos/{id}")
     public ResponseEntity<?> deleteTodo(@Valid @PathVariable Long id) {
         todoListService.deleteTodo(id);
-        return ResponseEntity.ok(new MessageResponse("Todo deleted successfully!"));
+        return ResponseEntity.ok(new MessageResponse("Todo item deleted successfully!"));
     }
 }
